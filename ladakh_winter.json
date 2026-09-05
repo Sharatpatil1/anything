@@ -1,0 +1,9 @@
+{
+  "profile": "Ladakh Winter",
+  "temperature": -15.0,
+  "irradiance": 850.0,
+  "humidity": 20.0,
+  "wind_speed": 5.5,
+  "pressure": 1010.0,
+  "sunshine_duration": 8.0
+}
