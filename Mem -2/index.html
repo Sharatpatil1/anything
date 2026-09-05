@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIH Passive Shelter Designer</title>
+</head>
+
+<body>
+
+    <h1>SIH Passive Shelter Designer</h1>
+
+    <p>CAD & Geometry Module</p>
+
+    <h2>Shelter Dimensions</h2>
+
+    <label>
+        Length (m):
+        <input type="number" id="length" value="6">
+    </label>
+
+    <br><br>
+
+    <label>
+        Width (m):
+        <input type="number" id="width" value="4">
+    </label>
+
+    <br><br>
+
+    <label>
+        Height (m):
+        <input type="number" id="height" value="3">
+    </label>
+
+    <br><br>
+
+    <button id="createButton">Create Shelter</button>
+
+    <h2>Geometry Results</h2>
+
+    <p>Floor Area: <span id="floorArea">-</span> m²</p>
+
+    <p>Volume: <span id="volume">-</span> m³</p>
+
+    <script>
+        const button = document.getElementById("createButton");
+
+        button.addEventListener("click", function () {
+
+            const length = Number(document.getElementById("length").value);
+            const width = Number(document.getElementById("width").value);
+            const height = Number(document.getElementById("height").value);
+
+            const floorArea = length * width;
+            const volume = length * width * height;
+
+            document.getElementById("floorArea").textContent = floorArea;
+            document.getElementById("volume").textContent = volume;
+
+        });
+    </script>
+
+</body>
+</html>
