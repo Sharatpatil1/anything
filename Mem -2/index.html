@@ -1,65 +1,973 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIH Passive Shelter Designer</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Smart Storage Facility Designer</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eef2f5;
+            color: #222;
+        }
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        header {
+            background: #172331;
+            color: white;
+            padding: 16px 24px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 20px;
+        }
+
+        .header-left h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .header-left p {
+            margin: 5px 0 0;
+            color: #cbd5df;
+            font-size: 14px;
+        }
+
+        .controls-help {
+            display: flex;
+            gap: 22px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .help-item strong {
+            display: block;
+            font-size: 14px;
+            color: white;
+        }
+
+        .help-item span {
+            color: #cbd5df;
+        }
+
+        /* =========================================
+           MAIN LAYOUT
+        ========================================= */
+
+        .app {
+            display: grid;
+            grid-template-columns: 330px 1fr;
+            min-height: calc(100vh - 78px);
+        }
+
+        /* =========================================
+           SIDEBAR
+        ========================================= */
+
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid #d9dee3;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #dce1e5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .panel h2 {
+            margin: 0 0 14px;
+            font-size: 16px;
+        }
+
+        /* =========================================
+           INPUTS
+        ========================================= */
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 100px;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-row label {
+            font-size: 14px;
+        }
+
+        .input-row input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #c8ced4;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            border: none;
+            border-radius: 5px;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .green-button {
+            width: 100%;
+            background: #159447;
+            color: white;
+        }
+
+        .green-button:hover {
+            background: #107737;
+        }
+
+        .blue-button {
+            background: #1671d9;
+            color: white;
+        }
+
+        .red-button {
+            background: #e53935;
+            color: white;
+        }
+
+        .gray-button {
+            background: #73777d;
+            color: white;
+        }
+
+        .button-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        /* =========================================
+           GEOMETRY
+        ========================================= */
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 9px 0;
+            border-bottom: 1px solid #edf0f2;
+            font-size: 13px;
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-row strong {
+            font-size: 13px;
+        }
+
+        /* =========================================
+           MAIN VIEW
+        ========================================= */
+
+        .main {
+            padding: 16px;
+            min-width: 0;
+        }
+
+        .viewer {
+            background: #f7f9fb;
+            border: 1px solid #d8dee3;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .viewer-top {
+            background: white;
+            border-bottom: 1px solid #dce1e5;
+            padding: 10px 14px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .viewer-title {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .view-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-buttons button {
+            padding: 8px 12px;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 590px;
+            position: relative;
+        }
+
+        /* =========================================
+           DASHBOARD
+        ========================================= */
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border: 1px solid #dce1e5;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .dashboard-card h3 {
+            margin: 0 0 8px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .dashboard-value {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .dashboard-note {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #29934d;
+        }
+
+        .good {
+            color: #16843b;
+        }
+
+        .warning {
+            color: #e67e00;
+        }
+
+        /* =========================================
+           FEATURES
+        ========================================= */
+
+        .features {
+            background: white;
+            border: 1px solid #dce1e5;
+            border-radius: 8px;
+            margin-top: 14px;
+            padding: 14px;
+        }
+
+        .features h2 {
+            margin: 0 0 12px;
+            font-size: 16px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 9px;
+        }
+
+        .feature {
+            border: 1px solid #e2e6e9;
+            border-radius: 6px;
+            padding: 10px;
+            min-height: 72px;
+        }
+
+        .feature strong {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .feature span {
+            font-size: 11px;
+            color: #666;
+        }
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .footer-note {
+            margin-top: 12px;
+            background: #eaf8ed;
+            border: 1px solid #ccebd3;
+            color: #22783a;
+            padding: 9px;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1100px) {
+
+            .feature-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .controls-help {
+                display: none;
+            }
+        }
+
+        @media (max-width: 800px) {
+
+            .app {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            #canvas-container {
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .view-buttons {
+                flex-wrap: wrap;
+            }
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <h1>SIH Passive Shelter Designer</h1>
 
-    <p>CAD & Geometry Module</p>
+<!-- =====================================================
+     HEADER
+====================================================== -->
 
-    <h2>Shelter Dimensions</h2>
+<header>
 
-    <label>
-        Length (m):
-        <input type="number" id="length" value="6">
-    </label>
+    <div class="header-left">
 
-    <br><br>
+        <h1>
+            🏢 Smart Storage Facility Designer
+        </h1>
 
-    <label>
-        Width (m):
-        <input type="number" id="width" value="4">
-    </label>
+        <p>
+            2-Floor Storage Room with Passive Design Features
+        </p>
 
-    <br><br>
+    </div>
 
-    <label>
-        Height (m):
-        <input type="number" id="height" value="3">
-    </label>
 
-    <br><br>
+    <div class="controls-help">
 
-    <button id="createButton">Create Shelter</button>
+        <div class="help-item">
 
-    <h2>Geometry Results</h2>
+            <strong>↻ Rotate</strong>
 
-    <p>Floor Area: <span id="floorArea">-</span> m²</p>
+            <span>Drag Mouse</span>
 
-    <p>Volume: <span id="volume">-</span> m³</p>
+        </div>
 
-    <script>
-        const button = document.getElementById("createButton");
 
-        button.addEventListener("click", function () {
+        <div class="help-item">
 
-            const length = Number(document.getElementById("length").value);
-            const width = Number(document.getElementById("width").value);
-            const height = Number(document.getElementById("height").value);
+            <strong>⌕ Zoom</strong>
 
-            const floorArea = length * width;
-            const volume = length * width * height;
+            <span>Scroll</span>
 
-            document.getElementById("floorArea").textContent = floorArea;
-            document.getElementById("volume").textContent = volume;
+        </div>
 
-        });
-    </script>
-    <script type="module" src="/main.js"></script>
+
+        <div class="help-item">
+
+            <strong>✥ Pan</strong>
+
+            <span>Right Drag</span>
+
+        </div>
+
+
+        <div class="help-item">
+
+            <strong>◫ Open / Close</strong>
+
+            <span>Toggle View</span>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =====================================================
+     APPLICATION
+====================================================== -->
+
+<div class="app">
+
+
+    <!-- =================================================
+         SIDEBAR
+    ================================================== -->
+
+    <aside class="sidebar">
+
+
+        <!-- BUILDING DIMENSIONS -->
+
+        <div class="panel">
+
+            <h2>
+                Building Dimensions (m)
+            </h2>
+
+
+            <div class="input-row">
+
+                <label>
+                    Length
+                </label>
+
+                <input
+                    id="length"
+                    type="number"
+                    value="12"
+                    min="4"
+                    step="0.5"
+                >
+
+            </div>
+
+
+            <div class="input-row">
+
+                <label>
+                    Width
+                </label>
+
+                <input
+                    id="width"
+                    type="number"
+                    value="8"
+                    min="4"
+                    step="0.5"
+                >
+
+            </div>
+
+
+            <div class="input-row">
+
+                <label>
+                    Ground Floor Height
+                </label>
+
+                <input
+                    id="groundHeight"
+                    type="number"
+                    value="3"
+                    min="2"
+                    step="0.5"
+                >
+
+            </div>
+
+
+            <div class="input-row">
+
+                <label>
+                    First Floor Height
+                </label>
+
+                <input
+                    id="firstHeight"
+                    type="number"
+                    value="3"
+                    min="2"
+                    step="0.5"
+                >
+
+            </div>
+
+
+            <button
+                id="createButton"
+                class="green-button"
+            >
+                ↻ Update Building
+            </button>
+
+        </div>
+
+
+        <!-- GEOMETRY -->
+
+        <div class="panel">
+
+            <h2>
+                Geometry Results
+            </h2>
+
+
+            <div class="metric-row">
+
+                <span>
+                    Ground Floor Area
+                </span>
+
+                <strong>
+                    <span id="groundArea">-</span>
+                    m²
+                </strong>
+
+            </div>
+
+
+            <div class="metric-row">
+
+                <span>
+                    First Floor Area
+                </span>
+
+                <strong>
+                    <span id="firstArea">-</span>
+                    m²
+                </strong>
+
+            </div>
+
+
+            <div class="metric-row">
+
+                <span>
+                    Wall Area
+                </span>
+
+                <strong>
+                    <span id="wallArea">-</span>
+                    m²
+                </strong>
+
+            </div>
+
+
+            <div class="metric-row">
+
+                <span>
+                    Roof Area
+                </span>
+
+                <strong>
+                    <span id="roofArea">-</span>
+                    m²
+                </strong>
+
+            </div>
+
+
+            <div class="metric-row">
+
+                <span>
+                    Total Surface Area
+                </span>
+
+                <strong>
+                    <span id="surfaceArea">-</span>
+                    m²
+                </strong>
+
+            </div>
+
+
+            <div class="metric-row">
+
+                <span>
+                    Storage Volume
+                </span>
+
+                <strong>
+                    <span id="volume">-</span>
+                    m³
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- FRONT WALL CONTROL -->
+
+        <div class="panel">
+
+            <h2>
+                Building Access
+            </h2>
+
+
+            <div class="button-row">
+
+                <button
+                    id="openButton"
+                    class="blue-button"
+                >
+                    Open Front Wall
+                </button>
+
+
+                <button
+                    id="closeButton"
+                    class="red-button"
+                >
+                    Close Front Wall
+                </button>
+
+            </div>
+
+
+            <p
+                id="wallStatus"
+                style="
+                    text-align:center;
+                    margin:10px 0 0;
+                    font-size:12px;
+                "
+            >
+                🔒 Wall is closed
+            </p>
+
+        </div>
+
+
+        <!-- RESET -->
+
+        <div class="panel">
+
+            <button
+                id="resetButton"
+                class="gray-button"
+                style="width:100%;"
+            >
+                ↶ Reset Building
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =================================================
+         MAIN
+    ================================================== -->
+
+    <main class="main">
+
+
+        <!-- 3D VIEWER -->
+
+        <div class="viewer">
+
+
+            <div class="viewer-top">
+
+                <div class="viewer-title">
+
+                    3D Storage Facility
+
+                </div>
+
+
+                <div class="view-buttons">
+
+                    <button
+                        id="exteriorButton"
+                        class="blue-button"
+                    >
+                        Exterior View
+                    </button>
+
+
+                    <button
+                        id="interiorButton"
+                        class="gray-button"
+                    >
+                        Interior View
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div id="canvas-container"></div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             MONITORING DASHBOARD
+        ================================================== -->
+
+        <div class="dashboard">
+
+
+            <div class="dashboard-card">
+
+                <h3>
+                    🌡 Temperature
+                </h3>
+
+                <div
+                    id="temperature"
+                    class="dashboard-value"
+                >
+                    24.6 °C
+                </div>
+
+                <div class="dashboard-note">
+                    Ideal: 20–28 °C
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>
+                    💧 Humidity
+                </h3>
+
+                <div
+                    id="humidity"
+                    class="dashboard-value"
+                >
+                    54 %
+                </div>
+
+                <div class="dashboard-note">
+                    Ideal: 40–60 %
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>
+                    🛡 Storage Status
+                </h3>
+
+                <div
+                    id="storageStatus"
+                    class="dashboard-value good"
+                >
+                    GOOD
+                </div>
+
+                <div
+                    id="statusNote"
+                    class="dashboard-note"
+                >
+                    Conditions are optimal
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>
+                    ☀ Solar Gain (Est.)
+                </h3>
+
+                <div
+                    id="solarGain"
+                    class="dashboard-value"
+                >
+                    8.72 kWh/day
+                </div>
+
+                <div class="dashboard-note">
+                    Passive heating potential
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             SMART FEATURES
+        ================================================== -->
+
+        <div class="features">
+
+            <h2>
+                Smart Design Features
+            </h2>
+
+
+            <div class="feature-grid">
+
+
+                <div class="feature">
+
+                    <strong>
+                        🏢 2-Floor Storage
+                    </strong>
+
+                    <span>
+                        More storage capacity
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <strong>
+                        ☀ Passive Solar Wall
+                    </strong>
+
+                    <span>
+                        Absorbs heat in winter
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <strong>
+                        🟨 Insulation Layer
+                    </strong>
+
+                    <span>
+                        Thermal insulation
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <strong>
+                        💨 Ventilation System
+                    </strong>
+
+                    <span>
+                        Cross-flow air circulation
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <strong>
+                        🗄 Storage Racks
+                    </strong>
+
+                    <span>
+                        Organized storage
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <strong>
+                        🪟 Natural Lighting
+                    </strong>
+
+                    <span>
+                        Daylight through windows
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-note">
+
+            Note: Temperature, Humidity and Solar Gain values
+            are simulated for demonstration purpose.
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script
+    type="module"
+    src="/main.js"
+></script>
+
+
 </body>
+
 </html>
